@@ -20,7 +20,7 @@ namespace CSharpExample_MD.Utils
 
             var token = response.AccessToken.ToString();
 
-            Console.WriteLine("Token de acesso obtido");
+            Console.WriteLine("Got access token");
             Console.WriteLine();
 
             return token;

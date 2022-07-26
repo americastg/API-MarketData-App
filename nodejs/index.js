@@ -18,7 +18,7 @@ async function getToken() {
     const query = new URLSearchParams(data);
     await axios.post(TOKEN_URL, query.toString())
         .then(response => {
-            console.log('GOT THE TOKEN');
+            console.log('Got access token');
             token = response.data.access_token;
         }).catch(error => console.log('ERROR WHILE TRYING TO GET THE TOKEN: ' + error));
 
