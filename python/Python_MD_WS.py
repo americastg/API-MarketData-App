@@ -16,6 +16,9 @@ def get_token():
     return response.json()['access_token']
 
 def on_message(ws, message):
+    if message == b'\xff':
+        ws.send('')
+        return
     messageDes = msgpack.unpackb(message, timestamp = 3 ) # to get datetime with timezone info
     print(messageDes)
 

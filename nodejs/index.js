@@ -35,6 +35,11 @@ async function run(symbol, data) {
     };
 
     ws.onmessage = (event) => {
+		if(event.data[0] == 0xFF)
+        {
+            ws.send(0xFF)
+            return;
+        }
         const object = msgpck.decode(event.data);
         console.log(object);
     };

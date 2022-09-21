@@ -13,6 +13,7 @@ namespace CSharpExample_MD.Examples
         private readonly string _token;
         private readonly string _symbol;
         private readonly SubscriptionType _requestType;
+		private readonly byte[] HTB_MSG = new byte[] { 0xFF };
 
         public WebSocketExample(string connection, string token, string symbol, SubscriptionType requestType)
         {
@@ -73,6 +74,12 @@ namespace CSharpExample_MD.Examples
 
                         var messageArray = new byte[receiveSize];
                         Buffer.BlockCopy(receiveBuffer, 0, messageArray, 0, receiveSize);
+						
+						if (receiveSize == 1 && messageArray[0] == HTB_MSG[0])
+                        {
+                            await _webSocket.SendAsync(HTB_MSG, WebSocketMessageType.Binary, true, CancellationToken.None);
+                            continue;
+                        }
 
                         // deserialize message on appropriate object, to use at the users whim
                         switch (_requestType)
