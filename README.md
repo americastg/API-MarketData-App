@@ -7,7 +7,7 @@ Para envio de ordens são necessários os dados referentes aos campos contidos n
 
 A pasta 'csharp\CSharpExample\Types' contém exemplos das entidades de requisição e resposta em .NET 6.0.
 
-Para mais informações a cerca das funcionalidades disponíveis e modelos de requisição e resposta, documentação completa da API encontra-se em https://mtbserver.americastg.com.br:5067/index.html
+Para mais informações a cerca das funcionalidades disponíveis e modelos de requisição e resposta, documentação completa da API encontra-se em https://mtbserver.americastg.com.br:51546/index.html
 
 <br>
 <br>
@@ -20,4 +20,4 @@ To send orders, data referring to the fields contained in the file 'csharp\CShar
 
 The 'csharp\CSharpExample\Types' folder contains examples of request and response entities in .NET 6.0.
 
-For more information about available features and request and response models, complete API documentation can be found at https://mtbserver.americastg.com.br:5067/index.html
+For more information about available features and request and response models, complete API documentation can be found at https://mtbserver.americastg.com.br:51546/index.html
