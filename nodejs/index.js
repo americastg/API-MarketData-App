@@ -8,10 +8,13 @@ const BASE_ADDRESS = '<BASE_ADDRESS>/api/ws'
 // Token auth params
 const data = {
     grant_type: 'client_credentials', // do not change
-    scope: 'mdapi4',   // do not change
+    scope: 'atgapi',   // do not change
     client_id: '<CLIENT_ID>',
     client_secret: '<CLIENT_SECRET>'
 }
+
+const updateFreq = 1; // integer, if not set, defaults to 500ms
+const symbols = [ 'PETR4', 'VALE3' ]; // 200 symbols max
 
 async function getToken() {
     let token;
@@ -25,16 +28,23 @@ async function getToken() {
     return token;
 }
 
-async function run(symbol, data) {
+async function run(data) {
     const token = await getToken();
-    var urlEndpoint = `${BASE_ADDRESS.replace('http','ws')}/${symbol}/${data}`;
+    var urlEndpoint = `${BASE_ADDRESS.replace('http','ws')}/${data}`;
     const ws = new websocket(urlEndpoint);
+    var isFirstMessage = true;
 
     ws.onopen = (event) => {
-        ws.send(token);
+        ws.send(JSON.stringify({ 'Token': token, 'Symbols': symbols, 'UpdateFreq': updateFreq }));
     };
 
     ws.onmessage = (event) => {
+        if(isFirstMessage)
+        {
+            console.log(event.data.toString('utf8'));
+            isFirstMessage = false;
+            return;
+        }
 		if(event.data[0] == 0xFF)
         {
             ws.send(0xFF)
@@ -46,15 +56,15 @@ async function run(symbol, data) {
 
     ws.onerror = (event) => {
         console.log('Error')
-        console.log(event.data)
+        console.log(event.message)
     }
 }
 
 // book subscription
-run('PETR4', 'book')
+run('book')
 
 // trades subscription
-//run('PETR4', 'trades')
+//run('trades')
 
 // best offers subscription
-//run('PETR4', 'bestoffers')
+//run('bestoffers')

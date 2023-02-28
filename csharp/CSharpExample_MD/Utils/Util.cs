@@ -13,7 +13,7 @@ namespace CSharpExample_MD.Utils
                 Address = config.TokenAddress,
                 ClientId = config.ClientId,
                 ClientSecret = config.ClientSecret,
-                Scope = "mdapi4"
+                Scope = "atgapi"
             });
 
             if (response.IsError) throw new Exception($"Erro: [{response.Error}] | Status: [{response.HttpStatusCode}]");

@@ -3,6 +3,7 @@ using System.Net.WebSockets;
 using MessagePack;
 using CSharpExample_MD.Types.Config;
 using CSharpExample_MD.Types;
+using System.Text.Json;
 
 namespace CSharpExample_MD.Examples
 {
@@ -11,15 +12,18 @@ namespace CSharpExample_MD.Examples
         private ClientWebSocket _webSocket;
         private readonly string _connection;
         private readonly string _token;
+        private readonly List<string> _symbols;
+        private readonly int _freq;
         private readonly string _symbol;
         private readonly SubscriptionType _requestType;
 		private readonly byte[] HTB_MSG = new byte[] { 0xFF };
 
-        public WebSocketExample(string connection, string token, string symbol, SubscriptionType requestType)
+        public WebSocketExample(string connection, string token, List<string> symbols, int freq, SubscriptionType requestType)
         {
             _connection = connection.Replace("http", "ws");
             _token = token;
-            _symbol = symbol;
+            _symbols = symbols;
+            _freq = freq;
             _requestType = requestType;
         }
 
@@ -40,13 +44,15 @@ namespace CSharpExample_MD.Examples
         {
             _webSocket = new ClientWebSocket();
 
-            await _webSocket.ConnectAsync(new Uri($"{_connection}/{_symbol}/{_requestType}"), CancellationToken.None);
-            var sendBuffer1 = Encoding.UTF8.GetBytes(_token);
+            await _webSocket.ConnectAsync(new Uri($"{_connection}/{_requestType}"), CancellationToken.None);
+            var sendBuffer1 = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new RequestObject(_token, _symbols, _freq)));
             await _webSocket.SendAsync(new ArraySegment<byte>(sendBuffer1), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
         private async Task StartWebSocket(CancellationToken killConnectionToken)
         {
+            var fisrtMessage = true;
+
             while (true)
             {
                 var receiveBuffer = new byte[200_000];
@@ -78,6 +84,13 @@ namespace CSharpExample_MD.Examples
 						if (receiveSize == 1 && messageArray[0] == HTB_MSG[0])
                         {
                             await _webSocket.SendAsync(HTB_MSG, WebSocketMessageType.Binary, true, CancellationToken.None);
+                            continue;
+                        }
+
+                        if (fisrtMessage)
+                        {
+                            Console.WriteLine("Received response " + Encoding.UTF8.GetString(messageArray));
+                            fisrtMessage = false;
                             continue;
                         }
 
@@ -122,6 +135,7 @@ namespace CSharpExample_MD.Examples
                     _webSocket.Abort();
                     await Task.Delay(1000, killConnectionToken);
                     await CreateSocket();
+                    fisrtMessage = true;
                 }
             }
         }

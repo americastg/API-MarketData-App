@@ -11,9 +11,10 @@ using (StreamReader r = new("appsettings.json"))
 }
 var token = await Util.GetAuthToken(config);
 
-var symbol = "PETR4";
+var symbols = new List<string>() { "PETR4", "VALE3" }; // 200 symbols max
+var updateFreq = 1; // integer, if not set, defaults to 500ms
 var requestType = SubscriptionType.Book;
 
-await new WebSocketExample(config.BaseAddress, token, symbol, requestType).RunAsync();
+await new WebSocketExample(config.BaseAddress, token, symbols, updateFreq, requestType).RunAsync();
 
 Console.ReadLine();

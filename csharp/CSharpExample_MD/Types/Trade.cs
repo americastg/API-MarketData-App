@@ -5,6 +5,8 @@ namespace CSharpExample_MD.Types
     [MessagePackObject(keyAsPropertyName: true)]
     public  class Trade
     {
+        public string Symbol { get; set; }
+
         public string TradeId { get; set; }
 
         public DateTime TradeTimeUtc { get; set; }
